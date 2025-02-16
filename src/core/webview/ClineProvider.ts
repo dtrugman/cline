@@ -390,7 +390,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 							}),
 						)
 						// post last cached models in case the call to endpoint fails
-						this.readOpenRouterModels().then((openRouterModels) => {
+						this.readDynamicProviderModels(GlobalFileNames.openRouterModels).then((openRouterModels) => {
 							if (openRouterModels) {
 								this.postMessageToWebview({
 									type: "openRouterModels",
@@ -1079,11 +1079,11 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 		return cacheDir
 	}
 
-	async readOpenRouterModels(): Promise<Record<string, ModelInfo> | undefined> {
-		const openRouterModelsFilePath = path.join(await this.ensureCacheDirectoryExists(), GlobalFileNames.openRouterModels)
-		const fileExists = await fileExistsAtPath(openRouterModelsFilePath)
+	async readDynamicProviderModels(filename: string): Promise<Record<string, ModelInfo> | undefined> {
+		const filePath = path.join(await this.ensureCacheDirectoryExists(), filename)
+		const fileExists = await fileExistsAtPath(filePath)
 		if (fileExists) {
-			const fileContents = await fs.readFile(openRouterModelsFilePath, "utf8")
+			const fileContents = await fs.readFile(filePath, "utf8")
 			return JSON.parse(fileContents)
 		}
 		return undefined
