@@ -1089,6 +1089,13 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 		return undefined
 	}
 
+	adjustPriceToMillionTokens(price: any) {
+		if (price) {
+			return parseFloat(price) * 1_000_000
+		}
+		return undefined
+	}
+
 	async refreshOpenRouterModels() {
 		const openRouterModelsFilePath = path.join(await this.ensureCacheDirectoryExists(), GlobalFileNames.openRouterModels)
 
@@ -1123,20 +1130,14 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			*/
 			if (response.data?.data) {
 				const rawModels = response.data.data
-				const parsePrice = (price: any) => {
-					if (price) {
-						return parseFloat(price) * 1_000_000
-					}
-					return undefined
-				}
 				for (const rawModel of rawModels) {
 					const modelInfo: ModelInfo = {
 						maxTokens: rawModel.top_provider?.max_completion_tokens,
 						contextWindow: rawModel.context_length,
 						supportsImages: rawModel.architecture?.modality?.includes("image"),
 						supportsPromptCache: false,
-						inputPrice: parsePrice(rawModel.pricing?.prompt),
-						outputPrice: parsePrice(rawModel.pricing?.completion),
+						inputPrice: this.adjustPriceToMillionTokens(rawModel.pricing?.prompt),
+						outputPrice: this.adjustPriceToMillionTokens(rawModel.pricing?.completion),
 						description: rawModel.description,
 					}
 
