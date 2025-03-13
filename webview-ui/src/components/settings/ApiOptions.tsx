@@ -408,6 +408,7 @@ const ApiOptions = ({
 						className="w-full">
 						<span className="font-medium">Requesty API Key</span>
 					</VSCodeTextField>
+					{!apiConfiguration?.requestyApiKey && <a href="https://app.requesty.ai/manage-api">Get API Key</a>}
 					<div className="text-sm text-vscode-descriptionForeground -mt-2">
 						This key is stored locally and only used to make API requests from this extension.
 					</div>
