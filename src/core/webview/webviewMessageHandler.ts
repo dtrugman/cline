@@ -399,7 +399,7 @@ export const webviewMessageHandler = async (provider: ClineProvider, message: We
 
 			break
 		case "refreshRequestyModels":
-			const requestyModels = await getRequestyModels()
+			const requestyModels = await getRequestyModels(message.values?.apiKey)
 
 			if (Object.keys(requestyModels).length > 0) {
 				await provider.writeModelsToCache(GlobalFileNames.requestyModels, requestyModels)
