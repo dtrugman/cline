@@ -152,20 +152,6 @@ export const webviewMessageHandler = async (provider: ClineProvider, message: We
 				}
 			})
 
-			getRequestyModels().then(async (requestyModels) => {
-				if (Object.keys(requestyModels).length > 0) {
-					await provider.writeModelsToCache(GlobalFileNames.requestyModels, requestyModels)
-					await provider.postMessageToWebview({ type: "requestyModels", requestyModels })
-
-					const { apiConfiguration } = await provider.getState()
-
-					if (apiConfiguration.requestyModelId) {
-						await updateGlobalState("requestyModelInfo", requestyModels[apiConfiguration.requestyModelId])
-						await provider.postStateToWebview()
-					}
-				}
-			})
-
 			provider.providerSettingsManager
 				.listConfig()
 				.then(async (listApiConfig) => {
