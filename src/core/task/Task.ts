@@ -12,7 +12,7 @@ import { serializeError } from "serialize-error"
 import { TokenUsage, ToolUsage, ToolName, ContextCondense } from "../../schemas"
 
 // api
-import { ApiHandler, buildApiHandler } from "../../api"
+import { ApiHandler, ApiHandlerCreateMessageMetadata, buildApiHandler } from "../../api"
 import { ApiStream } from "../../api/transform/stream"
 
 // shared
@@ -1467,6 +1467,7 @@ export class Task extends EventEmitter<ClineEvents> {
 			alwaysApproveResubmit,
 			requestDelaySeconds,
 			experiments,
+			mode,
 			autoCondenseContextPercent = 100,
 		} = (await this.providerRef.deref()?.getState()) ?? {}
 
@@ -1560,7 +1561,12 @@ export class Task extends EventEmitter<ClineEvents> {
 			}
 		}
 
-		const stream = this.api.createMessage(systemPrompt, cleanConversationHistory)
+		const metadata: ApiHandlerCreateMessageMetadata = {
+			mode: mode,
+			taskId: this.taskId,
+		}
+
+		const stream = this.api.createMessage(systemPrompt, cleanConversationHistory, metadata)
 		const iterator = stream[Symbol.asyncIterator]()
 
 		try {
